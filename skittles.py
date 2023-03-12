@@ -1,6 +1,8 @@
+# CT60A4304 Basics of database systems - Project
+# Authors: Joona Lappalainen AND Veikka Immonen
 # Script to generate skittles database.
+# Dependensies: faker, random, itertools, time, sqlite3
 # If skittles.db exists do not run this code!
-# !! NO WARRANTY !! 
 
 
 from faker import Faker

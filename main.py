@@ -1,3 +1,9 @@
+# CT60A4304 Basics of database systems - Project
+# Authors: Joona Lappalainen AND Veikka Immonen
+# The main CLI for searching and modifying database
+# Dependensies: sqlite3, datetime
+
+
 import sqlite3
 import datetime
 
@@ -7,7 +13,6 @@ cur = db.cursor()
 
 
 def main():
-    initializeDB()
     userInput = -1
     while(userInput != "0"):
         print("\nMenu options:")
@@ -44,19 +49,6 @@ def main():
             print("Unknown command! Try again.") 
     db.close()        
     return
-
-
-def initializeDB():
-    try:
-        f = open("sqlcommands.sql", "r")
-        commandstring = ""
-        for line in f.readlines():
-            commandstring+=line
-        cur.executescript(commandstring)
-    except sqlite3.OperationalError:
-        print("Database exists, skip initialization")
-    except:
-        print("No SQL file to be used for initialization") 
 
 
 def printTeams():

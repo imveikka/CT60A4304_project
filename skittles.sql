@@ -1,3 +1,8 @@
+-- CT60A4304 Basics of database systems - Project
+-- Authors: Joona Lappalainen AND Veikka Immonen
+-- Database structure
+
+
 CREATE TABLE Team (
     team_ID         INT NOT NULL PRIMARY KEY,
     FK_captain_ID   INT NOT NULL,
@@ -56,3 +61,7 @@ CREATE TABLE Stadium (
     stadium_town      TEXT CHECK (LENGTH(stadium_town) <= 32),
     stadium_type      TEXT CHECK (LENGTH(stadium_type) <= 32)
 );
+
+
+CREATE INDEX player_team_index ON Player(FK_team_ID);
+CREATE INDEX match_participants ON Match(FK_team1_ID, FK_team2_ID)
