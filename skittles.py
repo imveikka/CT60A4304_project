@@ -62,7 +62,7 @@ if __name__ == "__main__":
         random.shuffle(pairs_ids[i])
     random.shuffle(pairs_ids)
     results = [(random.randint(0, 20), random.randint(0, 20)) for _ in range(120)]
-    fields = [random.randint(1, 5) for _ in range(120)]
+    fields = [random.randint(1, 10) for _ in range(120)]
     dates = [str_time_prop("01-01-2065", "31-12-2065", "%d-%m-%Y", random.random()) for _ in range(120)]
     match_data = [(id + 1, field, date, r1, r2, t1, t2, t1 if r1 < r2 else t2 if r2 < r1 else None) for id, (date, (r1, r2), (t1, t2), field) in enumerate(zip(dates[:40], results, pairs_ids, fields))]
 

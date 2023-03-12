@@ -8,13 +8,13 @@ CREATE TABLE Team (
 
 
 CREATE TABLE Player (
-    player_ID       INT NOT NULL PRIMARY KEY,
-    first_name      TEXT CHECK (LENGTH(first_name) <= 16),
-    last_name       TEXT CHECK (LENGTH(last_name) <= 16),
-    FK_team_ID      INT,
-    FK_home_stadium INT,
+    player_ID               INT NOT NULL PRIMARY KEY,
+    first_name              TEXT CHECK (LENGTH(first_name) <= 16),
+    last_name               TEXT CHECK (LENGTH(last_name) <= 16),
+    FK_team_ID              INT,
+    FK_home_stadium_ID      INT,
     FOREIGN KEY (FK_team_ID) REFERENCES Team (team_ID) ON DELETE CASCADE,
-    FOREIGN KEY (FK_home_stadium) REFERENCES Stadium (stadium_ID) ON DELETE CASCADE
+    FOREIGN KEY (FK_home_stadium_ID) REFERENCES Stadium (stadium_ID) ON DELETE CASCADE
 );
 
 
@@ -37,7 +37,7 @@ CREATE TABLE Statistics (
 
 CREATE TABLE Match (
     match_ID        INT NOT NULL PRIMARY KEY,
-    FK_stadium_ID     INT NOT NULL,
+    FK_stadium_ID   INT NOT NULL,
     match_date      TEXT CHECK (LENGTH(match_date) <= 16),
     result_team1    INT,
     result_team2    INT,
