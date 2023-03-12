@@ -64,8 +64,9 @@ def printTeams():
     )
     results = cur.fetchall()
     name, short, captain = "Team name", "Short", "Captain"
-    print(f"{name:^30s}|{short:^10s}|{captain:^20s}")
-    print("-"*62)
+    title = f"{name:^30s}|{short:^10s}|{captain:^20s}"
+    print(title)
+    print("-" * len(title))
 
     for (n, s, c) in results:
         print(f"{n:^30s}|{s:^10s}|{c:^20s}")
@@ -92,8 +93,9 @@ def printMatches():
     results = cur.fetchall()
     date, stadium, teams, result = "Date", "Stadium", "Team 1 (home) vs Team 2", "Result"
     
-    print(f"{date:^12s}|{stadium:^28s}|{teams:^26s}|{result:^10s}")
-    print("-"*79)
+    title = f"{date:^12s}|{stadium:^28s}|{teams:^26s}|{result:^10s}"
+    print(title)
+    print("-" * len(title))
 
     for d, s, t, r in results:
         print(f"{d:^12s}|{s:^28s}|{t:^26s}|{r:^10s}")
@@ -103,25 +105,78 @@ def printMatches():
 
 def printPlayersAndStats():
 
-    # TODO Nimi, Joukkue, Pelattujen pelien lkm, OKA; hauet, 
-
     print("Printing players and stats")
-    cur.execute("SELECT first_name, last_name FROM Player INNER JOIN Statistics ON Player.player_ID = Statistics.FK_player_ID;")
+    cur.execute(
+        "SELECT  \
+            Player.first_name || ' ' || Player.last_name, \
+            (SELECT team_name_short FROM Team WHERE Team.team_ID = Player.FK_team_ID), \
+            total_score * 1.0 / (SELECT COUNT(*) FROM Match WHERE Match.FK_team1_ID = Player.FK_team_ID OR Match.FK_team2_ID = Player.FK_team_ID) AS mean, \
+            pikes \
+        FROM Statistics \
+        INNER JOIN Player ON Player.player_id = Statistics.FK_player_id \
+        ORDER BY mean DESC;"
+    )
     results = cur.fetchall()
-    for player_and_stats in results:
-        print(player_and_stats)
+    
+    name, team, mean, pikes = (
+        "Name", "Team name", "Mean score", "Pikes"
+    )
+    title = f"{name:^22}|{team:^12}|{mean:^12}|{pikes:^7}"
+    print(title)
+    print("-" * len(title))
+
+    for name, team, mean, pikes in results:
+        print(f"{name:^22}|{team:^12}|{mean:^12.2f}|{pikes:^7}")
     return
 
 ####################################################
 
-def MVP():
-    cur.execute("SELECT first_name, last_name FROM Player WHERE player_ID = (SELECT FK_player_ID FROM Statistics WHERE mean_score = 0);")    
-    return
+# statsit hoitaa, tilalle jpoku NM relaatiota hyödyntävä
+# def MVP():
+#     cur.execute(
+#         "SELECT \
+#             Player.first_name || ' ' || Player.last_name, \
+#             (SELECT team_name FROM Team WHERE Team.team_ID = Player.FK_team_ID), \
+#             total_score \
+#         FROM Statistics \
+#         INNER JOIN Player ON Player.player_id = Statistics.FK_player_id \
+#         ORDER BY total_score DESC;"
+#     )
+#     for fname, lname, team, score in cur.fetchall():
+#         print(fname, lname, team, score)
+#     return
 
 ####################################################
+
+
+
+####################################################
+
 
 def pikeKing():
-    cur.execute("SELECT first_name, last_name FROM Player WHERE player_ID = (SELECT FK_player_ID FROM Statistics WHERE pikes = 20);") 
+    cur.execute(
+        "SELECT  \
+            Player.first_name || ' ' || Player.last_name, \
+            (SELECT team_name_short FROM Team WHERE Team.team_ID = Player.FK_team_ID), \
+            pikes \
+        FROM Statistics \
+        INNER JOIN Player ON Player.player_id = Statistics.FK_player_id \
+        WHERE pikes = (SELECT MAX(pikes) FROM Statistics) \
+        ORDER BY Player.first_name;"
+    )
+    results = cur.fetchall()
+    
+    print(f"Current pike king(s) has {results[0][2]} pikes:")
+
+    name, team = (
+        "Name", "Team name"
+    )
+    title = f"{name:^22}|{team:^12}"
+    print(title)
+    print("-" * len(title))
+
+    for name, team, _ in results:
+        print(f"{name:^22}|{team:^12}")
     return
 
 ####################################################

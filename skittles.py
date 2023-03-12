@@ -33,7 +33,7 @@ if __name__ == "__main__":
     # Player data
     player_names = [f"{F.first_name()} {F.last_name()}".split() for _ in range(4 * len((team_names)))]
     fk_team_ids = sorted([num + 1 for _ in range(4) for num in range(len(team_names))]) 
-    player_data = [(id + 1, name[0], name[1], t_id) for id, (name, t_id) in enumerate(zip(player_names, fk_team_ids))]
+    player_data = [(id + 1, name[0], name[1], t_id, random.randint(1, 5)) for id, (name, t_id) in enumerate(zip(player_names, fk_team_ids))]
 
 
     # Ranking data (zero points)
@@ -43,7 +43,7 @@ if __name__ == "__main__":
 
     # Statistics
     fk_play_ids = [data[0] for data in sorted(player_data, key = lambda player: f"{player[1]} {player[2]}")]
-    stats_data = [(id + 1, 6 * random.random(), random.randint(0, 20), fk_id) for id, fk_id in enumerate(fk_play_ids)]
+    stats_data = [(id + 1, random.randint(20, 50), random.randint(0, 20), fk_id) for id, fk_id in enumerate(fk_play_ids)]
 
 
     # Stadion
@@ -64,7 +64,7 @@ if __name__ == "__main__":
     results = [(random.randint(0, 20), random.randint(0, 20)) for _ in range(120)]
     fields = [random.randint(1, 5) for _ in range(120)]
     dates = [str_time_prop("01-01-2065", "31-12-2065", "%d-%m-%Y", random.random()) for _ in range(120)]
-    match_data = [(id + 1, field, date, r1, r2, t1, t2, t1 if r1 < r2 else t2 if r2 < r1 else None) for id, (date, (r1, r2), (t1, t2), field) in enumerate(zip(sorted(dates)[:40], results, pairs_ids, fields))]
+    match_data = [(id + 1, field, date, r1, r2, t1, t2, t1 if r1 < r2 else t2 if r2 < r1 else None) for id, (date, (r1, r2), (t1, t2), field) in enumerate(zip(dates[:40], results, pairs_ids, fields))]
 
 
     # Add rankings
@@ -91,7 +91,7 @@ if __name__ == "__main__":
 
 
     # Insert players
-    cursor.executemany("INSERT INTO Player VALUES(?, ?, ?, ?)", player_data)
+    cursor.executemany("INSERT INTO Player VALUES(?, ?, ?, ?, ?)", player_data)
     connection.commit()
 
 
