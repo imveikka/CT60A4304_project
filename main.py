@@ -198,33 +198,35 @@ def searchTeam():
 ####################################################    
 
 def modifyMatch():
-    matchID = input("\nWhat is the matchID of the match you want to modify? ")
     option = -1
     while option != "0":
-        option = input("Modify options:\n1: Add a new match\n2: Move a match\n3: Remove a match\n0: Return to menu\nWhat do you want to do? ")
+        option = input("\nModify options:\n1: Add a new match\n2: Move a match\n3: Remove a match\n0: Return to menu\nWhat do you want to do? ")
         if option == "1":
             matchdate = input("Give matchdate: ")
             stadium = input("Give stadium ID: ")
             team1 = input("Give team 1 ID: ")
             team2 = input("Give team 2 ID: ")
-            result = input("Give result: ")
+            result1 = input("Give result of team 1: ")
+            result2 = input("Give result of team 2: ")
             winner = input("Give winner ID: ")
-            cur.execute("INSERT INTO Match VALUES (?,?,?,?,?,?);", (matchdate, stadium, team1, team2, result, winner,))
-            print("Added match")
+            cur.execute("INSERT INTO Match VALUES (((SELECT max(match_ID) FROM MATCH) +1),?,?,?,?,?,?,?);", (stadium, matchdate, result1, result2, team1, team2, winner,))
+            print("\nAdded match")
         elif option == "2":
+            matchID = input("\nWhat is the matchID of the match you want to move? ")
             newMatchDate = input ("What is the new matchdate you want to set?")
             if newMatchDate == "NULL":
                 cur.execute("UPDATE Match SET FK_stadium_ID=(?),match_date=(?),result=(?),FK_team1_ID=(?),FK_team2_ID=(?),winner_ID=(?) WHERE match_ID=(?);", (None, None, None, None, None, None, matchID,))
             else:
                 cur.execute("UPDATE Match SET match_date=(?) WHERE match_ID=(?);", (newMatchDate, matchID,))
-            print("Match moved successfully.")                
+            print("\nMatch moved successfully.")                
         elif option == "3": 
+            matchID = input("\nWhat is the matchID of the match you want to remove? ")
             cur.execute("DELETE FROM Match WHERE match_ID=(?);", (matchID,))
-            print("Match removed successfully.")
+            print("\nMatch removed successfully.")
         elif option == "0":
-            print("Returning to menu...")
+            print("\nReturning to menu...")
         else:
-            print("Unknown option.")
+            print("\nUnknown option.")
     return
 
 ####################################################
