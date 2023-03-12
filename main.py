@@ -152,7 +152,6 @@ def printPlayersAndStats():
 
 ####################################################
 
-
 def pikeKing():
     cur.execute(
         "SELECT  \
@@ -181,8 +180,25 @@ def pikeKing():
 
 ####################################################
 
+def searchTeam():
+    teamName = input("\nWhat is the teamname? ")
+    cur.execute(
+        f"SELECT team_name, team_name_short, GROUP_CONCAT(Player.first_name || ' ' || Player.last_name, ', ') \
+        FROM Team \
+        INNER JOIN Player ON Player.FK_team_id = Team.team_ID \
+        WHERE team_name = '{teamName}';")
+
+    oneRow = cur.fetchone()
+
+    print("\nTeam name: " + str(oneRow[0]))
+    print("Short team name: " + str(oneRow[1]))
+    print("Players: " + str(oneRow[2]))
+    return
+
+####################################################    
+
 def modifyMatch():
-    matchID = input("What is the matchID of the match you want to modify? ")
+    matchID = input("\nWhat is the matchID of the match you want to modify? ")
     option = -1
     while option != "0":
         option = input("Modify options:\n1: Add a new match\n2: Move a match\n3: Remove a match\n0: Return to menu\nWhat do you want to do? ")
@@ -212,18 +228,6 @@ def modifyMatch():
     return
 
 ####################################################
-
-def searchTeam():
-    teamName = input("What is the teamname? ")
-    cur.execute("SELECT * FROM Team WHERE team_name = (?);", (teamName,))
-    oneRow = cur.fetchone()
-
-    print("ID:" + str(oneRow[0]))
-    print("Team name:" + str(oneRow[2]))
-    print("Short team name:" + str(oneRow[1]))
-    return
-
-####################################################    
 
 main()
 
